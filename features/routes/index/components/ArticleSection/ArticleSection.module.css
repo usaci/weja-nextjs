@@ -12,7 +12,7 @@
 .inner {
 	max-inline-size: var(--container-width-normal);
 	margin-inline: auto;
-	padding-block: 80px 120px;
+	padding-block: 80px;
 	@media (width <= 768px) {
 		padding-block: 48px 80px;
 	}

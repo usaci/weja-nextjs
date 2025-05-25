@@ -1,18 +1,16 @@
 import { fetchAllCategories, fetchAllCategoriesSlug, fetchArticleDetailsBySlug, getCategoriesById } from "@/app/actions";
-import Footer from "@/components/Footer/Footer";
-import Header from "@/components/Header/Header";
 import { SITE_NAME } from "@/constants";
 import { getAllArticles } from "@/features/routes/article/articles";
 import ArticleHeader from "@/features/routes/article/components/ArticleHeader/ArticleHeader";
 import type { Article } from "@/types";
 import { load } from "cheerio";
 import type { Metadata } from "next";
+import { headers } from "next/headers"
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import styles from "./page.module.css"
-
 // 動的メタデータの生成
-export async function generateMetadata({ params }: {params: Promise<{slug: string}>}): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const article = await fetchArticleDetailsBySlug(slug);
   if (!article) {
@@ -21,19 +19,20 @@ export async function generateMetadata({ params }: {params: Promise<{slug: strin
     }
   }
 
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
-  const url = `${siteUrl}/post/${slug}`;
+  const url = (await headers()).get('x-url') || ""
+  const $excerpt = load(article.excerpt.rendered).text();
+  console.log($excerpt)
 
   return {
     title: `${article.title.rendered}｜${SITE_NAME}`,
-    description: article.excerpt.rendered || "",
-    metadataBase: new URL(siteUrl),
+    description: $excerpt || "",
+    metadataBase: new URL(url),
     alternates: {
       canonical: `/post/${slug}`,
     },
     openGraph: {
-      title: `${article.title}｜${SITE_NAME}`,
-      description: article.excerpt.rendered,
+      title: `${article.title.rendered}｜${SITE_NAME}`,
+      description: $excerpt || "",
       url,
       images: [
         {
@@ -49,7 +48,7 @@ export async function generateMetadata({ params }: {params: Promise<{slug: strin
 
 export default async function Page({ params }: { params: Promise<{ slug: string }> }) {
   const frontURL = process.env.NEXT_PUBLIC_SITE_URL as string
-  const wpRestAPIURL = process.env.NEXT_PUBLIC__WP_URL as string
+  const wpRestAPIURL = process.env.NEXT_PUBLIC_WP_URL as string
   const { slug } = await params;
 
   const article = await fetchArticleDetailsBySlug(slug) as Article;
@@ -70,20 +69,32 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
         catSlugs
           .filter((catSlug) => link.includes(catSlug))
           .map((catSlug) => {
-            $(element).attr(
-              "href",
-              link.replace(wpRestAPIURL, frontURL).replace(catSlug, "post")
-            );
+            // 内部リンクの場合は#の形に置き換え
+            if (link.includes(`${wpRestAPIURL}/${catSlug}/${slug}/#`)) {
+              const newLink = link.split('/', 6).filter((v) => v.match(/^#.*/))[0]
+              $(element).attr(
+                "href",
+                link.replace(link, newLink)
+              )
+
+            } else {
+              console.log(`${wpRestAPIURL}/${catSlug}/${slug}/#`)
+              $(element).attr(
+                "href",
+                link.replace(wpRestAPIURL, frontURL).replace(catSlug, "post")
+              );
+            }
           });
       } else if (link?.startsWith(wpRestAPIURL)) {
         $(element).attr("href", link.replace(wpRestAPIURL, frontURL));
+      } else {
+
       }
     });
     return $.html();
   };
   const content = modifyContentLinks(article.content.rendered);
   const categories = await getCategoriesById(article.categories, AllCategories)
-  console.log(categories)
   const getNearestArticles = async () => {
     const $articles: Article[] = await getAllArticles();
     const index = ($articles as Article[]).findIndex(a => a.id === article.id)

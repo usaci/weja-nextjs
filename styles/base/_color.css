@@ -1,0 +1,29 @@
+@property --color-main-blue {
+	syntax: "<color>";
+	inherits: false;
+	initial-value: #00a5bf;
+}
+
+@property --color-main-black {
+	syntax: "<color>";
+	inherits: false;
+	initial-value: #404343;
+}
+
+@property --color-main-white {
+	syntax: "<color>";
+	inherits: false;
+	initial-value: #fff;
+}
+
+@property --color-main-seablue {
+	syntax: "<color>";
+	inherits: false;
+	initial-value: #3bb9cc;
+}
+
+@property --color-main-vividred {
+	syntax: "<color>";
+	inherits: false;
+	initial-value: #ec547d;
+}

@@ -1,0 +1,9 @@
+.inner {
+	display: grid;
+	padding-block: 24px;
+	margin-inline: auto;
+	justify-self: center;
+	& small {
+		text-align: center;
+	}
+}

@@ -1,95 +1,43 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+import Footer from "@/components/Footer/Footer";
+import { Header } from "@/components/Header/Header";
+import { SITE_CATCHCOPY, SITE_DESCRIPTION, SITE_NAME } from "@/constants";
+import { ArticleSection } from "@/features/routes/index/components/ArticleSection/ArticleSection";
+import { MainVisual } from "@/features/routes/index/components/MainVisual/MainVisual";
+import { fetchArticles } from "./actions";
+export const metadata = {
+  title: `${SITE_NAME}｜${SITE_CATCHCOPY}`,
+  description:
+    `${SITE_DESCRIPTION}`,
+  metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com"),
+  alternates: {
+    canonical: "/",
+  },
+  openGraph: {
+    title: `${SITE_NAME}｜${SITE_CATCHCOPY}`,
+    description:
+      `${SITE_DESCRIPTION}`,
+    url: "/",
+    images: [
+      {
+        url: "/image.png",
+        width: 1200,
+        height: 620,
+        alt: "WeJaのOGP画像です",
+      },
+    ],
+  },
+};
+export default async function Home() {
 
-export default function Home() {
+  const articles = await fetchArticles({ limit: 9 });
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-            <li>Save and see your changes instantly.</li>
-        </ol>
-
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
+    <>
+      <Header />
+      <main>
+        <MainVisual />
+        <ArticleSection initialData={articles || []} />
       </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+      <Footer />
+    </>
   );
 }

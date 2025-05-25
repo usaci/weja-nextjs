@@ -1,0 +1,26 @@
+@property --container-width-normal {
+	syntax: "*";
+	inherits: false;
+	initial-value: 1100px;
+}
+
+html {
+	scroll-behavior: smooth;
+}
+
+body {
+	color: var(--color-main-white);
+	background-color: var(--color-main-blue);
+	font-feature-settings: "palt";
+	font-family: "LINE Seed JP", sans-serif;
+	line-height: var(--leading-relaxed);
+	background-image: url("/wave.svg");
+	background-size: 100%;
+	background-position: center;
+	font-weight: 500;
+	overflow-x: clip;
+	@media (width <= 768px) {
+		background-size: 300%;
+		font-size: calc(14 * var(--rem));
+	}
+}

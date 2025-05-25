@@ -1,0 +1,6 @@
+@import url("./base/_color.css");
+@import url("./base/_typography.css");
+@import url("./base/_layout.css");
+@import url("./settings/_utilities.css");
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";

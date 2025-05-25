@@ -1,0 +1,40 @@
+.wrap {
+	border-radius: 80px;
+	background-color: var(--color-main-white);
+	padding-inline: 24px;
+	color: var(--color-main-black);
+	@media (width <= 768px) {
+		padding-inline: 20px;
+		border-radius: 36px;
+	}
+}
+
+.inner {
+	max-inline-size: var(--container-width-normal);
+	margin-inline: auto;
+	padding-block: 80px 120px;
+	@media (width <= 768px) {
+		padding-block: 48px 80px;
+	}
+}
+
+.heading {
+	font-weight: 700;
+	line-height: 1.5;
+	font-size: calc(24 * var(--rem));
+	margin-bottom: 40px;
+	@media (width <= 768px) {
+		font-size: calc(16 * var(--rem));
+	}
+	& .num {
+		font-size: calc(84 * var(--rem));
+		color: var(--color-main-blue);
+		font-family: "Cabin Variable", sans-serif;
+		font-weight: 500;
+		line-height: 0.85;
+		margin-right: 8px;
+		@media (width <= 768px) {
+			font-size: calc(64 * var(--rem));
+		}
+	}
+}

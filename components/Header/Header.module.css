@@ -1,0 +1,24 @@
+.header {
+	padding-inline: 24px;
+	& .inner {
+		margin-inline: auto;
+		padding-block: 40px;
+		max-inline-size: var(--container-width-normal);
+	}
+
+	& .logo {
+		opacity: 1;
+		transition: opacity .3s;
+		@media (any-hover: hover) {
+			&:hover {
+				opacity: 0.6;
+			}
+		}
+	}
+
+	@media (width <= 768px) {
+		& img {
+			inline-size: 60px;
+		}
+	}
+}

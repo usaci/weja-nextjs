@@ -11,11 +11,8 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import styles from "./page.module.css"
 
-type Props = {
-  params: { slug: string };
-};
 // 動的メタデータの生成
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: {params: Promise<{slug: string}>}): Promise<Metadata> {
   const { slug } = await params;
   const article = await fetchArticleDetailsBySlug(slug);
   if (!article) {

@@ -1,3 +1,5 @@
+import Footer from "@/components/Footer/Footer";
+import Header from "@/components/Header/Header";
 import type { Metadata } from "next";
 import "@/styles/global.css";
 
@@ -15,7 +17,9 @@ export default function RootLayout({
     <html lang="ja">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <body>
+        <Header />
         {children}
+        <Footer />
       </body>
     </html>
   );

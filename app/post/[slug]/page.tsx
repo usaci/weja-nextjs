@@ -1,6 +1,6 @@
 import { fetchAllCategories, fetchAllCategoriesSlug, fetchArticleDetailsBySlug, getCategoriesById } from "@/app/actions";
 import Footer from "@/components/Footer/Footer";
-import { Header } from "@/components/Header/Header";
+import Header from "@/components/Header/Header";
 import { SITE_NAME } from "@/constants";
 import { getAllArticles } from "@/features/routes/article/articles";
 import ArticleHeader from "@/features/routes/article/components/ArticleHeader/ArticleHeader";
@@ -8,6 +8,7 @@ import type { Article } from "@/types";
 import { load } from "cheerio";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import styles from "./page.module.css"
 
 type Props = {
@@ -19,9 +20,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const article = await fetchArticleDetailsBySlug(slug);
   if (!article) {
     return {
-      title: `記事が見つかりませんでした｜${SITE_NAME}`,
-      description: "お探しの記事は存在しないか、削除されました。",
-    };
+      title: ""
+    }
   }
 
   const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://example.com";
@@ -55,7 +55,10 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
   const wpRestAPIURL = process.env.NEXT_PUBLIC__WP_URL as string
   const { slug } = await params;
 
-
+  const article = await fetchArticleDetailsBySlug(slug) as Article;
+  if (!article) {
+    notFound();
+  }
   const AllCategories = await fetchAllCategories();
 
   const catSlugs = await fetchAllCategoriesSlug(AllCategories)
@@ -81,8 +84,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
     });
     return $.html();
   };
-
-  const article = await fetchArticleDetailsBySlug(slug) as Article;
   const content = modifyContentLinks(article.content.rendered);
   const categories = await getCategoriesById(article.categories, AllCategories)
   console.log(categories)
@@ -102,7 +103,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
 
   return (
     <>
-      <Header />
       <main>
         <ArticleHeader title={article.title.rendered} date={article.date} categories={article.categories} />
         <div className={styles.inner}>
@@ -134,7 +134,6 @@ export default async function Page({ params }: { params: Promise<{ slug: string 
           </footer>
         </div>
       </main>
-      <Footer />
     </>
   )
 }

@@ -1,5 +1,5 @@
 import Footer from "@/components/Footer/Footer";
-import { Header } from "@/components/Header/Header";
+import Header from "@/components/Header/Header";
 import { SITE_CATCHCOPY, SITE_DESCRIPTION, SITE_NAME } from "@/constants";
 import { ArticleSection } from "@/features/routes/index/components/ArticleSection/ArticleSection";
 import { MainVisual } from "@/features/routes/index/components/MainVisual/MainVisual";
@@ -32,12 +32,10 @@ export default async function Home() {
   const articles = await fetchArticles({ limit: 9 });
   return (
     <>
-      <Header />
       <main>
         <MainVisual />
         <ArticleSection initialData={articles || []} />
       </main>
-      <Footer />
     </>
   );
 }

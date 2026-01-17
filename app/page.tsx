@@ -4,6 +4,9 @@ import { MainVisual } from "@/features/routes/index/components/MainVisual/MainVi
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { fetchArticles } from "./actions";
+
+export const runtime = 'edge';
+
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const url = (await headers()).get('x-url') || ""
   return {

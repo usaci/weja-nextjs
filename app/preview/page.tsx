@@ -1,20 +1,69 @@
 'use client'
 import { BASE_URL } from "@/constants";
 import ArticleHeader from "@/features/routes/article/components/ArticleHeader/ArticleHeader";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
 import ArticleBody from "../post/[slug]/_parts/ArticleBody";
-export default async function Preview({ params }: { params: Promise<{ slug: string }> }) {
+import type { Article, Category } from "@/types";
+
+function PreviewContent() {
   const searchParams = useSearchParams();
   const id = searchParams.get('p') as string;
-  const article = await getArticleByIdFromClientSide(id)
+  const [article, setArticle] = useState<Article | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!id) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const [articleData, categoriesData] = await Promise.all([
+          getArticleByIdFromClientSide(id),
+          geAllCategoriesFromClientSide(),
+        ]);
+
+        if (articleData && articleData[0]) {
+          setArticle(articleData[0]);
+        }
+        if (categoriesData) {
+          setCategories(categoriesData);
+        }
+      } catch (error) {
+        // Error handling
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [id]);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!article) {
+    return <div>Article not found</div>;
+  }
+
   return (
-    <>
-      <main>
-        <ArticleHeader title={article.title.rendered} date={article.date} categories={article.categories} />
-        <ArticleBody article={article} nearestPosts={nearestPosts} catSlugs={catSlugs} categories={categories} slug={slug} />
-      </main>
-    </>
-  )
+    <main>
+      <ArticleHeader title={article.title.rendered} date={article.date} categories={article.categories} />
+      <ArticleBody article={article} nearestPosts={[]} catSlugs={[]} categories={categories} slug={""} />
+    </main>
+  );
+}
+
+export default function Preview() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <PreviewContent />
+    </Suspense>
+  );
 }
 
 const geAllCategoriesFromClientSide = async () => {

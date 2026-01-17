@@ -1,0 +1,6 @@
+body {margin:10; background-image: url(../image/back.png);}
+
+div#enchant-stage {
+	border: 10px solid #cccccc;
+	margin:30px auto;
+}

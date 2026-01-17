@@ -22,6 +22,45 @@ export default function ArticleBody({ article, nearestPosts, catSlugs, categorie
 
     const wpBaseDomain = getBaseDomain(wpRestAPIURL);
 
+    // リンクのテキストコンテンツを置換する関数
+    const replaceLinkText = (text: string): string => {
+      if (!text) return text;
+
+      // 相対リンクか絶対リンクかを判定
+      const isRelativeLink = text.startsWith("/") && !text.startsWith("//");
+      const textStartsWithWpDomain = wpBaseDomain && text.startsWith(wpBaseDomain);
+      const textStartsWithFrontURL = frontURL && text.startsWith(frontURL);
+
+      // 処理対象のテキストかどうかを判定
+      const shouldProcess = isRelativeLink || textStartsWithWpDomain || textStartsWithFrontURL;
+
+      if (shouldProcess) {
+        // カテゴリスラッグが含まれている場合
+        const matchedCatSlug = catSlugs.find((catSlug) => text.includes(`/${catSlug}/`));
+        if (matchedCatSlug) {
+          // 内部リンク（同じ記事へのアンカーリンク）の場合は#の形に置き換え
+          const anchorMatch = text.match(/#(.+)$/);
+          if (text.includes(`${matchedCatSlug}/${slug}`) && anchorMatch) {
+            return `#${anchorMatch[1]}`;
+          }
+          // 他の記事へのリンクの場合は /post/ に置き換え
+          let newText = text;
+          // ドメイン部分をfrontURLに置き換え（絶対リンクの場合）
+          if (textStartsWithWpDomain && wpBaseDomain) {
+            newText = newText.replace(wpBaseDomain, frontURL || "");
+          }
+          // カテゴリスラッグを /post/ に置き換え
+          newText = newText.replace(`/${matchedCatSlug}/`, "/post/");
+          return newText;
+        }
+        // カテゴリスラッグが含まれていない場合は、ベースURLのみ置き換え（絶対リンクの場合）
+        if (textStartsWithWpDomain && wpBaseDomain) {
+          return text.replace(wpBaseDomain, frontURL || "");
+        }
+      }
+      return text;
+    };
+
     $("a").each((_, element) => {
       const link = $(element).attr("href");
       if (!link) return;
@@ -59,11 +98,18 @@ export default function ArticleBody({ article, nearestPosts, catSlugs, categorie
             newLink = newLink.replace(`/${matchedCatSlug}/`, "/post/");
             $(element).attr("href", newLink);
           }
-        } else {
+        } else if (linkStartsWithWpDomain && wpBaseDomain) {
           // カテゴリスラッグが含まれていない場合は、ベースURLのみ置き換え（絶対リンクの場合）
-          if (linkStartsWithWpDomain && wpBaseDomain) {
-            const newLink = link.replace(wpBaseDomain, frontURL || "");
-            $(element).attr("href", newLink);
+          const newLink = link.replace(wpBaseDomain, frontURL || "");
+          $(element).attr("href", newLink);
+        }
+
+        // リンクのテキストコンテンツも置換
+        const textContent = $(element).text();
+        if (textContent) {
+          const newTextContent = replaceLinkText(textContent);
+          if (newTextContent !== textContent) {
+            $(element).text(newTextContent);
           }
         }
       }

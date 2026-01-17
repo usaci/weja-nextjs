@@ -3,13 +3,30 @@ import { SITE_NAME } from "@/constants";
 import { getAllArticles } from "@/features/routes/article/articles";
 import ArticleHeader from "@/features/routes/article/components/ArticleHeader/ArticleHeader";
 import type { Article } from "@/types";
-import { load } from "cheerio";
 import type { Metadata } from "next";
 import { headers } from "next/headers"
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ArticleBody from "./_parts/ArticleBody";
 import styles from "./page.module.css"
+
+export const runtime = 'edge';
+
+// HTMLからテキストを抽出する関数（Edge Runtime対応）
+function extractTextFromHTML(html: string): string {
+  if (!html) return "";
+  // HTMLタグを削除
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim();
+}
+
 // 動的メタデータの生成
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -21,7 +38,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   const url = (await headers()).get('x-url') || ""
-  const $excerpt = load(article.excerpt.rendered).text();
+  const $excerpt = extractTextFromHTML(article.excerpt.rendered);
 
   return {
     title: `${article.title.rendered}｜${SITE_NAME}`,

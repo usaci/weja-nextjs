@@ -1,32 +1,38 @@
 {
-  "name": "weja-nextjs",
-  "version": "0.1.0",
-  "private": true,
-  "scripts": {
-    "dev": "next dev --turbopack",
-    "build": "next build",
-    "start": "next start",
-    "lint": "biome check ."
-  },
-  "dependencies": {
-    "@tailwindcss/postcss": "^4.1.7",
-    "cheerio": "^1.0.0",
-    "next": "^15.3.2",
-    "postcss": "^8.5.3",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "react-router-dom": "^7.6.1",
-    "tailwindcss": "^4.1.7"
-  },
-  "devDependencies": {
-    "@biomejs/biome": "1.9.4",
-    "@tailwindcss/typography": "^0.5.16",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
-    "eslint": "^9.27.0",
-    "stylelint": "^16.19.1",
-    "stylelint-config-standard": "^38.0.0",
-    "typescript": "^5"
-  }
+	"name": "weja-nextjs",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev --turbopack",
+		"build": "next build",
+		"start": "next start",
+		"lint": "biome check .",
+		"pages:build": "npx @cloudflare/next-on-pages@1",
+		"pages:deploy": "npm run pages:build && wrangler pages deploy .vercel/output/static"
+	},
+	"dependencies": {
+		"@tailwindcss/postcss": "^4.1.18",
+		"cheerio": "^1.1.0",
+		"nprogress": "^0.2.0",
+		"next": "15.4.10",
+		"postcss": "^8.5.6",
+		"react": "^19.2.3",
+		"react-dom": "^19.2.3",
+		"react-router-dom": "^7.6.1",
+		"tailwindcss": "^4.1.18"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.3.11",
+		"@cloudflare/next-on-pages": "^1.11.0",
+		"@tailwindcss/typography": "^0.5.19",
+		"@types/node": "^20.19.30",
+		"@types/nprogress": "^0.2.3",
+		"@types/react": "^19.2.8",
+		"@types/react-dom": "^19.2.3",
+		"eslint": "^9.39.2",
+		"stylelint": "^16.26.1",
+		"stylelint-config-standard": "^39.0.1",
+		"typescript": "^5.9.3",
+		"wrangler": "^4.59.2"
+	}
 }

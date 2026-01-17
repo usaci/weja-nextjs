@@ -1,8 +1,10 @@
 import Footer from "@/components/Footer/Footer";
 import Header from "@/components/Header/Header";
+import ProgressBar from "@/components/ProgressBar/ProgressBar";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import "@/styles/global.css";
+import "@/components/ProgressBar/ProgressBar.css";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,6 +20,7 @@ export default function RootLayout({
     <html lang="ja">
       <meta name="viewport" content="width=device-width, initial-scale=1" />
       <body>
+        <ProgressBar />
         <Header />
         {children}
         <Footer />

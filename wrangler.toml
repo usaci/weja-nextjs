@@ -1,0 +1,9 @@
+name = "weja-nextjs"
+compatibility_date = "2024-01-01"
+
+[env.production]
+name = "weja-nextjs"
+
+[env.preview]
+name = "weja-nextjs-preview"
+

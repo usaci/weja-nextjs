@@ -1,6 +1,7 @@
 import { SITE_CATCHCOPY, SITE_DESCRIPTION, SITE_NAME } from "@/constants";
 import { ArticleSection } from "@/features/routes/index/components/ArticleSection/ArticleSection";
 import { MainVisual } from "@/features/routes/index/components/MainVisual/MainVisual";
+import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { fetchArticles } from "./actions";
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
